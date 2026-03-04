@@ -326,6 +326,23 @@ cmd_install() {
     if check_installed && [ -f "$INSTALL_DIR/home/.openclaw/.env" ]; then
         echo "✅ PocketAgent is already installed at: $INSTALL_DIR"
         echo ""
+        
+        # Check if daemon is set up
+        DAEMON_EXISTS=false
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            [ -f "$HOME/Library/LaunchAgents/com.pocketagent.plist" ] && DAEMON_EXISTS=true
+        elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+            [ -f "$HOME/.config/systemd/user/pocketagent.service" ] && DAEMON_EXISTS=true
+        fi
+        
+        if [ "$DAEMON_EXISTS" = false ]; then
+            echo "🔧 Auto-start daemon not found. Setting up..."
+            setup_autostart
+            echo ""
+            echo "✅ Auto-start daemon configured!"
+            echo ""
+        fi
+        
         echo "To update, run:"
         echo "  $0 update"
         echo ""
