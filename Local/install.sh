@@ -571,6 +571,24 @@ cmd_update() {
     echo "✓ Checking workspace updates..."
     update_workspace
     
+    # Check if daemon is set up
+    echo ""
+    echo "✓ Checking auto-start daemon..."
+    DAEMON_EXISTS=false
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        [ -f "$HOME/Library/LaunchAgents/com.pocketagent.plist" ] && DAEMON_EXISTS=true
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        [ -f "$HOME/.config/systemd/user/pocketagent.service" ] && DAEMON_EXISTS=true
+    fi
+    
+    if [ "$DAEMON_EXISTS" = false ]; then
+        echo "  Auto-start daemon not found. Setting up..."
+        setup_autostart
+        echo "  ✅ Auto-start daemon configured!"
+    else
+        echo "  ✅ Auto-start daemon already configured"
+    fi
+    
     echo ""
     echo "✅ PocketAgent updated successfully!"
 }
