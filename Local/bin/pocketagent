@@ -413,7 +413,7 @@ PYTHON_FIX
         fi
         
         cd "$OPENCLAW_PATH"
-        node dist/index.js doctor "$@"
+        node dist/index.js doctor
         ;;
     
     models|config|workspace|skills|integrations|health)
