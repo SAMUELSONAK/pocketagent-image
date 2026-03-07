@@ -332,7 +332,7 @@ case "$1" in
         fi
         
         # Use Python to fix all models
-        python3 << 'PYTHON_FIX'
+        python3 << PYTHON_FIX
 import json
 import sys
 
