@@ -511,19 +511,20 @@ try:
     for provider_name, provider_data in providers.items():
         models = provider_data.get('models', [])
         
-        for i, model in enumerate(models):
+        for model in models:
             model_id = model.get('id', 'unknown')
             context_window = model.get('contextWindow', 0)
             
-            if context_window < 16000:
+            # Set proper context window for all models
+            if context_window < 128000:
                 old_context = context_window
                 model['contextWindow'] = 128000
                 
-                # Set reasonable maxTokens
-                if model.get('maxTokens', 0) < 4096:
+                # Set reasonable maxTokens (output limit)
+                if model.get('maxTokens', 0) < 8192:
                     model['maxTokens'] = 8192
                 
-                print(f"  Fixed {provider_name}/{model_id}: {old_context} → 128000 tokens")
+                print(f"  ✓ Fixed {provider_name}/{model_id}: {old_context} → 128000 tokens")
                 fixed_count += 1
     
     if fixed_count > 0:
@@ -531,7 +532,7 @@ try:
             json.dump(config, f, indent=2)
         print(f"  ✓ Updated {fixed_count} model(s)")
     else:
-        print("  ✓ All models have sufficient context windows")
+        print("  ✓ All models already configured correctly")
         
 except Exception as e:
     print(f"  ⚠️  Could not fix context windows: {e}", file=sys.stderr)
