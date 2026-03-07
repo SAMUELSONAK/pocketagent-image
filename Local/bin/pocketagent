@@ -235,6 +235,15 @@ case "$1" in
             
             echo "  ✅ OpenClaw updated to $LATEST_VERSION"
             
+            # Run health check to migrate config
+            echo ""
+            echo "  Running health check..."
+            if "$0" doctor --fix 2>&1 | tee "$POCKETAGENT_ROOT/logs/doctor.log"; then
+                echo "  ✅ Health check passed"
+            else
+                echo "  ⚠️  Health check had warnings (check logs/doctor.log)"
+            fi
+            
             # Restart agent if it was running before
             if [ "$AGENT_WAS_RUNNING" = true ]; then
                 echo ""
