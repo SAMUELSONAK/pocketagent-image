@@ -104,8 +104,21 @@ case "$1" in
         esac
         ;;
     
-    update)
-        echo "📟 Updating PocketAgent..."
+    update-continue)
+        # This is called after the script updates itself
+        echo "📟 Continuing update with latest script..."
+        echo ""
+        
+        # Update installer script
+        echo "✓ Updating installer script..."
+        INSTALLER_URL="https://raw.githubusercontent.com/PocketAgentNetwork/pocketagent-image/main/Local/install.sh"
+        if curl -fsSL "$INSTALLER_URL" -o "$POCKETAGENT_ROOT/install.sh.new"; then
+            chmod +x "$POCKETAGENT_ROOT/install.sh.new"
+            mv "$POCKETAGENT_ROOT/install.sh.new" "$POCKETAGENT_ROOT/install.sh"
+            echo "  ✓ Installer script updated"
+        else
+            echo "  ⚠️  Failed to update installer script (continuing anyway)"
+        fi
         echo ""
         
         # Check current OpenClaw version
@@ -147,8 +160,8 @@ case "$1" in
             echo "  Downloading OpenClaw $LATEST_VERSION..."
             cd "$POCKETAGENT_ROOT/lib"
             
-            # Download release tarball
-            if ! curl -fsSL "https://github.com/openclaw/openclaw/archive/refs/tags/$LATEST_VERSION.tar.gz" -o openclaw.tar.gz; then
+            # Download release tarball with progress bar
+            if ! curl -L --progress-bar "https://github.com/openclaw/openclaw/archive/refs/tags/$LATEST_VERSION.tar.gz" -o openclaw.tar.gz; then
                 echo "❌ Failed to download OpenClaw"
                 if [ -d "$POCKETAGENT_ROOT/lib/$BACKUP_NAME" ]; then
                     echo "  Restoring backup..."
@@ -198,6 +211,27 @@ case "$1" in
         
         echo ""
         echo "✅ PocketAgent update complete!"
+        ;;
+    
+    update)
+        echo "📟 Updating PocketAgent..."
+        echo ""
+        
+        # Update pocketagent command script first
+        echo "✓ Updating pocketagent command..."
+        POCKETAGENT_URL="https://raw.githubusercontent.com/PocketAgentNetwork/pocketagent-image/main/Local/bin/pocketagent"
+        if curl -fsSL "$POCKETAGENT_URL" -o "$POCKETAGENT_ROOT/bin/pocketagent.new"; then
+            chmod +x "$POCKETAGENT_ROOT/bin/pocketagent.new"
+            mv "$POCKETAGENT_ROOT/bin/pocketagent.new" "$POCKETAGENT_ROOT/bin/pocketagent"
+            echo "  ✓ pocketagent command updated"
+            echo ""
+            echo "  Re-executing with updated script..."
+            exec "$POCKETAGENT_ROOT/bin/pocketagent" update-continue
+        else
+            echo "  ⚠️  Failed to update pocketagent command (continuing with current version)"
+            # If update failed, continue with current script
+            exec "$POCKETAGENT_ROOT/bin/pocketagent" update-continue
+        fi
         ;;
     
     fix-context)
