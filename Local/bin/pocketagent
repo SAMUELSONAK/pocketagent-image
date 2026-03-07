@@ -199,7 +199,7 @@ case "$1" in
             fi
             
             echo "  Installing dependencies (this may take a few minutes)..."
-            if ! pnpm install 2>&1 | tee "$POCKETAGENT_ROOT/logs/pnpm-install.log"; then
+            if ! pnpm install --recursive 2>&1 | tee "$POCKETAGENT_ROOT/logs/pnpm-install.log"; then
                 echo "❌ Failed to install dependencies"
                 echo "  Check logs: $POCKETAGENT_ROOT/logs/pnpm-install.log"
                 echo "  Restoring backup..."

@@ -431,7 +431,7 @@ cmd_install() {
         fi
         
         echo "  Installing dependencies (this may take a few minutes)..."
-        if ! pnpm install 2>&1 | tee "$INSTALL_DIR/logs/pnpm-install.log"; then
+        if ! pnpm install --recursive 2>&1 | tee "$INSTALL_DIR/logs/pnpm-install.log"; then
             echo "❌ Failed to install dependencies"
             echo "   Check logs: $INSTALL_DIR/logs/pnpm-install.log"
             echo "   Please check your internet connection and try again"
