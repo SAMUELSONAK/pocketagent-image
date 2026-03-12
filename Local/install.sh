@@ -416,7 +416,15 @@ cmd_install() {
     
     # Check prerequisites
     echo "✓ Checking prerequisites..."
-    command -v node >/dev/null || { echo "❌ Node.js 22+ required"; exit 1; }
+    
+    # Check for node (handle both Unix and Windows executables)
+    if ! command -v node >/dev/null 2>&1; then
+        if ! command -v node.exe >/dev/null 2>&1; then
+            echo "❌ Node.js 22+ required"
+            exit 1
+        fi
+    fi
+    
     command -v pnpm >/dev/null || { echo "Installing pnpm..."; npm install -g pnpm; }
     
     # Check disk space (need ~2GB for OpenClaw + node_modules)

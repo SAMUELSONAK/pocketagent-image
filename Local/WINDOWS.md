@@ -2,6 +2,16 @@
 
 PocketAgent now supports Windows installation and operation.
 
+## Installation Methods
+
+### Option 1: Native Windows (Recommended)
+Use PowerShell or Command Prompt to install Node.js, then use Git Bash for PocketAgent.
+
+### Option 2: WSL 2 (Windows Subsystem for Linux)
+If you have WSL 2 installed, you can use the Linux installation method directly.
+
+**Note:** WSL 1 is not supported. Please upgrade to WSL 2.
+
 ## What Was Fixed
 
 The installer script and pocketagent command wrapper were updated to support Windows:
