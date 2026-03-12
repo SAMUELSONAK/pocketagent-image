@@ -10,7 +10,14 @@ SCRIPT_VERSION="0.0.1"
 if [[ "$OSTYPE" == "darwin"* ]]; then
     INSTALL_DIR="/Applications/PocketAgent"
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    INSTALL_DIR="$HOME/.local/share/pocketagent"
+    # Check if running in WSL (Windows Subsystem for Linux)
+    if grep -qi microsoft /proc/version 2>/dev/null || [ -n "$WSL_DISTRO_NAME" ]; then
+        # WSL detected - use Windows path
+        INSTALL_DIR="$HOME/AppData/Local/PocketAgent"
+    else
+        # Native Linux
+        INSTALL_DIR="$HOME/.local/share/pocketagent"
+    fi
 elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "win32" ]]; then
     # Windows (Git Bash, Cygwin, or native Windows)
     INSTALL_DIR="$HOME/AppData/Local/PocketAgent"
